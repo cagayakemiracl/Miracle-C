@@ -17,12 +17,12 @@ all: $(TARGET)
 
 $(TARGET):
 	cd std/lib; make;
-	cd lib; $(AR) -x *.a; $(AR) -r $(MIRACLE) *.o; $(RANLIB) $(MIRACLE); rm *.o
-	$(CC) $(TARGET).c -lmiracle -L./lib -o $(TARGET)
+	$(AR) -x *.a; $(AR) -r $(MIRACLE) *.o; $(RANLIB) $(MIRACLE); rm *.o
+	$(CC) $(TARGET).c -lmiracle -L./ -o $(TARGET)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $*.c
 
 clean:
 	cd std/lib; make clean;
-	rm -rf $(TARGET) lib/* *~
+	rm -rf $(TARGET) $(MIRACLE) *~

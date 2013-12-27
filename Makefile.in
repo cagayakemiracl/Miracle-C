@@ -15,10 +15,10 @@ all: $(TARGET)
 $(TARGET): $(OBJS) 
 	$(AR) -r $(TARGET) $(OBJS)
 	$(RANLIB) $(TARGET)
-	cp $(TARGET) ../../lib/.
+	cp $(TARGET) ../../.
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $*.c
 
 clean:
-	rm -rf $(OBJS) $(TARGET) *~ ../include/*~ ../../lib/$(TARGET)
+	rm -rf $(OBJS) $(TARGET) *~ ../include/*~ ../../$(TARGET)

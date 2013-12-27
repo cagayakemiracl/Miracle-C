@@ -1,4 +1,4 @@
-#include "miracle.h"
+#include "../miracle.h"
 
 int main(void)
 {

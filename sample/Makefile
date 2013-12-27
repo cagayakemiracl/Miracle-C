@@ -1,4 +1,4 @@
-TARGET = libmiracle.a
+TARGET = sample
 
 AR = /usr/bin/ar
 CC = gcc
@@ -14,14 +14,12 @@ CFLAGS = -W -Wall -O3
 all: $(TARGET)
 
 $(TARGET):
-	cd std/lib; make;
-	$(AR) xv *.a
-	$(AR) r $(TARGET) *.o
-	rm *.o
+	cd ../; make;
+	$(CC) $(TARGET).c -lmiracle -L./../ -o $(TARGET)
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $*.c
 
 clean:
-	cd std/lib; make clean;
+	cd ../; make clean;
 	rm -rf $(TARGET) *~

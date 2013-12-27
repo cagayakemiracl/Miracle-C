@@ -23,13 +23,10 @@ Class(Int);
 Int Int_init(const int field);
 Int Int_new(void);
 
-#include "../include/string.h"
-#include "../include/int.h"
-
 #define Method *const
 
-#include "../include/Cstring.h"
-#include "../include/Cint.h"
+#include "../include/string.h"
+#include "../include/int.h"
 
 #define Delete(s) (s->delete(s))
 #define Set(s, d) (s->set(s, d))

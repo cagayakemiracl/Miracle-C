@@ -1,7 +1,7 @@
 AR = /usr/bin/ar
 RANLIB = /usr/bin/ranlib
 
-OBJS = string.o int.o Cstring.o Cint.o
+OBJS = string.o int.o
 TARGET = libstd.a
 
 include ../../Makefile.in

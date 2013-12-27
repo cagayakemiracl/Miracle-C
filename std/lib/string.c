@@ -2,30 +2,30 @@
 
 Int string_to_i(const string str)
 {
-  int num; // 文字列を整数に変換するための変数
+  int num; // 文字列を整数に変換するための変数 number
 
   sscanf(str, "%d", &num);
   
   return Int_init(num);
 }
 
-void string_input(charR str) // string型の標準入力関数
+void string_input(charR str)
 {
-  charR t; //入力した文字列の末尾をさすポインタ tail
+  charR tail; //入力した文字列の末尾をさすポインタ tail
 
   fgets(str, STRING_SIZE, stdin);
-  t = strchr(str, '\n');
+  tail = strchr(str, '\n');
   if (feof(stdin)) {
     puts("\n\n予期せぬ入力がありました!!");
     exit(EXIT_FAILURE);
   }
 
-  if (!t) {
+  if (!tail) {
     while (getchar() != '\n') {
       ;
     }
   } else { 
-    *t = '\0';
+    *tail = '\0';
   }
 }
 
@@ -81,11 +81,11 @@ static String Mprint(String self)
 
 String String_init(const string field)
 {
-  String new = (String) malloc(sizeof(String_t)); // 新しいStringクラスのインスタンスのメモリを確保
+  String new = (String) malloc(sizeof(String_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
   if (!new) {
     exit(EXIT_FAILURE);
   } else {
-    const String_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数
+    const String_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
       .delete = Mdelete,
       .getR   = MgetR,
       .get    = Mget,

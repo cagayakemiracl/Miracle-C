@@ -2,7 +2,7 @@
 
 String int_to_s(const int num)
 {
-  string str; // 整数を文字列に変換するための変数
+  string str; // 整数を文字列に変換するための変数 string
   
   snprintf(str, STRING_SIZE, "%d", num);
   
@@ -11,11 +11,11 @@ String int_to_s(const int num)
 
 static void int_input(intR num)
 {
-  string s; // 入力した文字列を格納 string
+  string str; // 入力した文字列を格納 string
 
-  string_input(s);
+  string_input(str);
   *num = 0;
-  sscanf(s, "%d", num);
+  sscanf(str, "%d", num);
 }
 
 static void int_print(const int num)
@@ -72,11 +72,11 @@ static Int Mprint(Int self)
 
 Int Int_init(const int field)
 {
-  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保
+  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
   if (!new) {
     exit(EXIT_FAILURE);
   } else {
-    const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数
+    const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
       .delete = Mdelete,
       .getR   = MgetR,
       .get    = Mget,

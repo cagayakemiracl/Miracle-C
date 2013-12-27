@@ -1,4 +1,4 @@
-#include "std/lib/std.h"
+#include "miracle.h"
 
 int main(void)
 {

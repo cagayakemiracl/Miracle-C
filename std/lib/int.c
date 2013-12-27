@@ -70,7 +70,7 @@ static Int Mprint(Int self)
   return self;
 }
 
-Int Int_init(const int field)
+Int Int_new(void)
 {
   Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
   if (!new) {
@@ -87,7 +87,89 @@ Int Int_init(const int field)
     };
 
     *new = tmp;
-    Mset(new, field);
+  }
+
+  return new;
+}
+
+Int Int_init(const int field)
+{
+  New(Int, new);
+  Mset(new, field);
+
+  return new;
+}
+
+static void Ldelete(IntList self)
+{
+  IntList next;
+
+  while (self) {
+    next = self->next;
+    Delete(self->field);
+    free(self);
+    self = next;
+  }
+}
+
+static IntList LgetTail(IntList self)
+{
+  {
+    for ( ; self->next; self = self->next) {
+      ;
+    }
+  }
+
+  return self;
+}
+
+static IntList Lselect(IntList self, const int num)
+{
+  {
+    int i; // 一時変数
+    
+    for (i = 0; self->next && (i < num); ++i, self = self->next) {
+      ;
+    }
+  }
+
+  return self;
+}
+
+static IntList Ladd(IntList self)
+{
+  {
+    New(IntList, new); // 末尾に追加するインスタンスを生成
+
+    if (!self) {
+      self = new;
+    } else {
+      IntList tail = LgetTail(self); // selfの最後の要素を指す tail
+      tail->next = new;
+      new->prev = tail;
+    }
+  }
+  
+  return self;
+}
+
+IntList IntList_new(void)
+{
+  IntList new = (IntList) malloc(sizeof(IntList_t)); // 新しいIntListクラスのインスタンスのメモリを確保 new
+   if (!new) {
+    exit(EXIT_FAILURE);
+  } else {
+    const IntList_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
+      .prev    = NULL,
+      .next    = NULL,
+      .field   = Int_new(),
+      .delete  = Ldelete,
+      .getTail = LgetTail,
+      .select  = Lselect,
+      .add     = Ladd,
+    };
+
+    *new = tmp;
   }
 
   return new;

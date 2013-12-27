@@ -16,4 +16,15 @@ typedef struct _Int {
   Int (Method print)(Int self);                // 出力関数
 } Int_t;
 
+typedef struct _IntList {
+  IntList next; // 双方向リスト
+  IntList prev;
+  Int field; // この配列の要素
+
+  void (Method delete)(IntList self); // インスタンスを削除
+  IntList (Method getTail)(IntList self); // 配列の最後の要素を返す
+  IntList (Method select)(IntList self, const int num); // 配列のnum番目の要素を返す
+  IntList (Method add)(IntList self); // 末尾に要素を追加
+} IntList_t;
+
 #endif

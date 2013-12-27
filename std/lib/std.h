@@ -13,15 +13,19 @@ typedef char *charR; // char型のポインタ
 
 typedef int *intR; // int型のポインタ
 
-#define Class(c) typedef struct _##c * const c // Classを定義するためのマクロ
+// Classを定義するためのマクロ
+#define Class(c) \
+typedef struct _##c * const c; \
+typedef struct _##c##List * c##List;
 
 Class(String);                          // Stringクラスの宣言
+String String_new(void);                // Stringクラスのインスタンスを生成
 String String_init(const string field); // Stringクラスのインスタンスを生成し値をfieldで初期化
-#define String_new (String_init(""))    // Stringクラスのインスタンスを生成し空文字列で初期化
 
 Class(Int);                    // Intクラスの宣言
-Int Int_init(const int field); // Intクラスのインスタンスを生成し値をfieldで初期化 
-#define Int_new (Int_init(0))  // Intクラスのインスタンスを生成し0で初期化 
+Int Int_new(void);             // Intクラスのインスタンスを生成
+Int Int_init(const int field); // Intクラスのインスタンスを生成し値をfieldで初期化
+IntList IntList_new(void);     // IntListクラスのインスタンスを生成
 
 #define Method *const // インスタンスメソッドを定義するマクロ
 
@@ -40,7 +44,7 @@ Int Int_init(const int field); // Intクラスのインスタンスを生成し�
 #define Get(s)    (*GetR(s))
 
 // インスタンスを生成するクラスメソッドを簡単に使うためのシンタックスシュガー
+#define New(t, v) t v = t##_new()
 #define Init(t, v, i) t v = t##_init(i)
-#define New(t, v) t v = t##_new
 
 #endif

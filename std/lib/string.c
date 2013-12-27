@@ -79,7 +79,7 @@ static String Mprint(String self)
   return self;
 }
 
-String String_init(const string field)
+String String_new(void)
 {
   String new = (String) malloc(sizeof(String_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
   if (!new) {
@@ -96,8 +96,15 @@ String String_init(const string field)
     };
     
     *new = tmp;
-    Mset(new, field);
   }
+
+  return new;
+}
+
+String String_init(const string field)
+{
+  New(String, new);
+  Mset(new, field);
 
   return new;
 }

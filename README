@@ -6,7 +6,7 @@ A. C言語でオブジェクト指向プログラミングするためのライ�
 #include "miracle.h"
 とするとMiracle-Cのライブラリを全て読み込みます
 
--lmiracle -L./lib
+-lmiracle -L./
 とするとリンク出来ます
 
 例えばInt(整数)クラスのインスタンスを10で初期化する場合は

@@ -2,7 +2,7 @@
 
 Int string_to_i(const string str)
 {
-  int num;
+  int num; // 文字列を整数に変換するための変数
 
   sscanf(str, "%d", &num);
   
@@ -81,11 +81,11 @@ static String Mprint(String self)
 
 String String_init(const string field)
 {
-  String new = (String) malloc(sizeof(String_t));
+  String new = (String) malloc(sizeof(String_t)); // 新しいStringクラスのインスタンスのメモリを確保
   if (!new) {
     exit(EXIT_FAILURE);
   } else {
-    const String_t tmp = {
+    const String_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数
       .delete = Mdelete,
       .getR   = MgetR,
       .get    = Mget,

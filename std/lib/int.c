@@ -2,14 +2,14 @@
 
 String int_to_s(const int num)
 {
-  string str;
+  string str; // 整数を文字列に変換するための変数
   
   snprintf(str, STRING_SIZE, "%d", num);
   
   return String_init(str);
 }
 
-static void int_input(intR num) // 入力した整数をnumに格納
+static void int_input(intR num)
 {
   string s; // 入力した文字列を格納 string
 
@@ -72,18 +72,18 @@ static Int Mprint(Int self)
 
 Int Int_init(const int field)
 {
-  Int new = (Int) malloc(sizeof(Int_t));
+  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保
   if (!new) {
     exit(EXIT_FAILURE);
   } else {
-    const Int_t tmp = {
+    const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数
       .delete = Mdelete,
-      .getR = MgetR,
-      .get = Mget,
-      .set = Mset,
-      .to_s = Mto_s,
-      .input = Minput,
-      .print = Mprint,
+      .getR   = MgetR,
+      .get    = Mget,
+      .set    = Mset,
+      .to_s   = Mto_s,
+      .input  = Minput,
+      .print  = Mprint,
     };
 
     *new = tmp;

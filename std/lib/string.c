@@ -101,8 +101,3 @@ String String_init(const string field)
 
   return new;
 }
-
-String String_new(void)
-{
-  return String_init(NULL);
-}

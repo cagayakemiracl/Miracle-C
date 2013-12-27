@@ -92,8 +92,3 @@ Int Int_init(const int field)
 
   return new;
 }
-
-Int Int_new(void)
-{
-  return Int_init(0);
-}

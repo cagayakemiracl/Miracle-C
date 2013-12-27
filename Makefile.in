@@ -1,5 +1,5 @@
 AR = /usr/bin/ar
-RANLIB = /usr/bin/ranlib
+#RANLIB = /usr/bin/ranlib
 CC = gcc
 #CC = gcc-4.2
 #CC = clang
@@ -13,8 +13,7 @@ CFLAGS = -W -Wall -O3
 all: $(TARGET)
 
 $(TARGET): $(OBJS) 
-	$(AR) -r $(TARGET) $(OBJS)
-	$(RANLIB) $(TARGET)
+	$(AR) r $(TARGET) $(OBJS)
 	cp $(TARGET) ../../.
 
 %.o : %.c

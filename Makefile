@@ -2,7 +2,7 @@ TARGET = sample
 MIRACLE = libmiracle.a
 
 AR = /usr/bin/ar
-RANLIB = /usr/bin/ranlib
+#RANLIB = /usr/bin/ranlib
 CC = gcc
 #CC = gcc-4.2
 #CC = clang
@@ -17,7 +17,7 @@ all: $(TARGET)
 
 $(TARGET):
 	cd std/lib; make;
-	$(AR) -x *.a; $(AR) -r $(MIRACLE) *.o; $(RANLIB) $(MIRACLE); rm *.o
+	$(AR) xv *.a; $(AR) r $(MIRACLE) *.o; rm *.o
 	$(CC) $(TARGET).c -lmiracle -L./ -o $(TARGET)
 
 %.o : %.c

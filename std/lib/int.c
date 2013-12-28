@@ -70,49 +70,29 @@ static Int Mprint(Int self)
   return self;
 }
 
-Int Int_new(void)
+static void Ldelete(Int self)
 {
-  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
-  if (!new) {
-    exit(EXIT_FAILURE);
-  } else {
-    const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
-      .delete = Mdelete,
-      .getR   = MgetR,
-      .get    = Mget,
-      .set    = Mset,
-      .to_s   = Mto_s,
-      .input  = Minput,
-      .print  = Mprint,
-    };
-
-    *new = tmp;
-  }
-
-  return new;
-}
-
-Int Int_init(const int field)
-{
-  New(Int, new);
-  Mset(new, field);
-
-  return new;
-}
-
-static void Ldelete(IntList self)
-{
-  IntList next;
+  Int next;
 
   while (self) {
     next = self->next;
-    Delete(self->field);
-    free(self);
+    Mdelete(self);
     self = next;
   }
 }
 
-static IntList LgetTail(IntList self)
+static Int Lfirst(Int self)
+{
+  {
+    for ( ; self->prev; self = self->prev) {
+      ;
+    }
+  }
+
+  return self;
+}
+
+static Int Llast(Int self)
 {
   {
     for ( ; self->next; self = self->next) {
@@ -123,7 +103,18 @@ static IntList LgetTail(IntList self)
   return self;
 }
 
-static IntList Lselect(IntList self, const int num)
+static Int Lsize(Int self)
+{
+  Init(Int, i, 0);
+
+  for ( ; self; ++Get(i, 0), self = self->next) {
+    ;
+  }
+
+  return i;
+}
+    
+static Int Lselect(Int self, const int num)
 {
   {
     int i; // 一時変数
@@ -136,15 +127,43 @@ static IntList Lselect(IntList self, const int num)
   return self;
 }
 
-static IntList Ladd(IntList self)
+static intR LgetR(Int self, const int index)
+{
+  self = Lselect(self, index);
+
+  return MgetR(self);
+}
+
+static int Lget(Int self, const int index)
+{
+  self = Lselect(self, index);
+
+  return Mget(self);
+}
+
+static Int Lset(Int self, const int index, const int num)
+{
+  self = Lselect(self, index);
+
+  return Mset(self, num);
+}
+
+static String Lto_s(Int self, const int index)
+{
+  self = Lselect(self, index);
+
+  return Mto_s(self);
+}
+
+static Int Lpush(Int self)
 {
   {
-    New(IntList, new); // 末尾に追加するインスタンスを生成
+    New(Int, new); // 末尾に追加するインスタンスを生成
 
     if (!self) {
       self = new;
     } else {
-      IntList tail = LgetTail(self); // selfの最後の要素を指す tail
+      Int tail = Llast(self); // selfの最後の要素を指す tail
       tail->next = new;
       new->prev = tail;
     }
@@ -153,24 +172,76 @@ static IntList Ladd(IntList self)
   return self;
 }
 
-IntList IntList_new(void)
+static Int Lprint(Int self)
 {
-  IntList new = (IntList) malloc(sizeof(IntList_t)); // 新しいIntListクラスのインスタンスのメモリを確保 new
-   if (!new) {
+  {
+    Int p;
+    Init(String, l, "[ ");
+    Init(String, r, "] ");
+
+    Print(l)->delete(l);
+    for (p = self; p; p = p->next) {
+      Mprint(p); putchar(' ');
+    }
+    
+    Print(r)->delete(r);
+  }
+
+  return self;
+}
+
+static Int Linput(Int self)
+{
+  {
+    Int p;
+    Init(Int, i, 0);
+    Init(String, c, " > ");
+
+    for (p = self; p; ++Get(i, 0), p = p->next) {
+      Print(i); Print(c);
+      Minput(p);
+    }
+
+    Delete(i); Delete(c);
+  }
+
+  return self;
+}
+
+Int Int_new(void)
+{
+  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
+  if (!new) {
     exit(EXIT_FAILURE);
   } else {
-    const IntList_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
-      .prev    = NULL,
-      .next    = NULL,
-      .field   = Int_new(),
-      .delete  = Ldelete,
-      .getTail = LgetTail,
-      .select  = Lselect,
-      .add     = Ladd,
+    const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
+      .prev   = NULL,
+      .next   = NULL,
+      .self   = new,
+      .delete = Ldelete,
+      .getR   = LgetR,
+      .get    = Lget,
+      .set    = Lset,
+      .first  = Lfirst,
+      .last   = Llast,
+      .select = Lselect,
+      .size   = Lsize,
+      .to_s   = Lto_s,
+      .input  = Linput,
+      .print  = Lprint,
+      .push   = Lpush,
     };
 
     *new = tmp;
   }
+
+  return new;
+}
+
+Int Int_init(const int num)
+{
+  New(Int, new);
+  Set(new, 0, num);
 
   return new;
 }

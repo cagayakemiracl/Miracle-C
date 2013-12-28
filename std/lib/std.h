@@ -15,8 +15,7 @@ typedef int *intR; // int型のポインタ
 
 // Classを定義するためのマクロ
 #define Class(c) \
-typedef struct _##c * const c; \
-typedef struct _##c##List * c##List;
+typedef struct _##c * c; \
 
 Class(String);                          // Stringクラスの宣言
 String String_new(void);                // Stringクラスのインスタンスを生成
@@ -25,7 +24,6 @@ String String_init(const string field); // Stringクラスのインスタンス�
 Class(Int);                    // Intクラスの宣言
 Int Int_new(void);             // Intクラスのインスタンスを生成
 Int Int_init(const int field); // Intクラスのインスタンスを生成し値をfieldで初期化
-IntList IntList_new(void);     // IntListクラスのインスタンスを生成
 
 #define Method *const // インスタンスメソッドを定義するマクロ
 
@@ -34,14 +32,15 @@ IntList IntList_new(void);     // IntListクラスのインスタンスを生成
 
 // インスタンスメソッドを簡単に使うためのシンタックスシュガー
 #define Delete(s) (s->delete(s))
-#define Set(s, d) (s->set(s, d))
+#define Set(s, i, d) (s->set(s, i, d))
 #define To_i(s)   (s->to_i(s))
-#define To_s(s)   (s->to_s(s))
+#define To_s(s, i)   (s->to_s(s, i))
 #define Input(s)  (s->input(s))
 #define Print(s)  (s->print(s))
+#define Push(s)   (s->push(s))
 
-#define GetR(s)   (s->getR(s))
-#define Get(s)    (*GetR(s))
+#define GetR(s, i)   (s->getR(s, i))
+#define Get(s, i)    (*GetR(s, i))
 
 // インスタンスを生成するクラスメソッドを簡単に使うためのシンタックスシュガー
 #define New(t, v) t v = t##_new()

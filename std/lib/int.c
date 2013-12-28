@@ -40,9 +40,7 @@ static int Mget(Int self)
 
 static Int Mset(Int self, const int field)
 {
-  {
-    *MgetR(self) = field;
-  }
+  *MgetR(self) = field;
   
   return self;
 }
@@ -54,25 +52,21 @@ static String Mto_s(Int self)
 
 static Int Minput(Int self)
 {
-  {
-    int_input(MgetR(self));
-  }
+  int_input(MgetR(self));
 
   return self;
 }
 
 static Int Mprint(Int self)
 {
-  {
-    int_print(Mget(self));
-  }
+  int_print(Mget(self));
 
   return self;
 }
 
 static void Ldelete(Int self)
 {
-  Int next;
+  Int next; // 開放したインスタンスのnextポインタを保存 next
 
   while (self) {
     next = self->next;
@@ -83,10 +77,8 @@ static void Ldelete(Int self)
 
 static Int Lfirst(Int self)
 {
-  {
-    for ( ; self->prev; self = self->prev) {
-      ;
-    }
+  for ( ; self->prev; self = self->prev) {
+    ;
   }
 
   return self;
@@ -94,30 +86,17 @@ static Int Lfirst(Int self)
 
 static Int Llast(Int self)
 {
-  {
-    for ( ; self->next; self = self->next) {
-      ;
-    }
+  for ( ; self->next; self = self->next) {
+    ;
   }
 
   return self;
 }
 
-static Int Lsize(Int self)
-{
-  Init(Int, i, 0);
-
-  for ( ; self; ++Get(i), self = self->next) {
-    ;
-  }
-
-  return i;
-}
-    
 static Int Lelement(Int self, const int num)
 {
   {
-    int i; // 一時変数
+    int i; // 一時変数 index
     
     for (i = 0; self->next && (i < num); ++i, self = self->next) {
       ;
@@ -127,10 +106,51 @@ static Int Lelement(Int self, const int num)
   return self;
 }
 
+static Int Lsize(Int self)
+{
+  Init(Int, size, 0); // selfのノードの数 大きさ size
+
+  for ( ; self; ++Get(size), self = self->next) {
+    ;
+  }
+
+  return size;
+}
+
+static intR LgetRI(Int self, const int index)
+{
+  index_m(Int, self, index, MgetR);
+}
+
+static int LgetI(Int self, const int index)
+{
+  index_m(Int , self, index, Mget);
+}
+
+static Int LsetI(Int self, const int index, const int field)
+{
+  index_two_m(Int, self, index, Mset, field);
+}
+
+static String Lto_sI(Int self, const int index)
+{
+  index_m(Int, self, index, Mto_s);
+}
+
+static Int LprintI(Int self, const int index)
+{
+  index_m(Int, self, index, Mprint);
+}
+
+static Int LinputI(Int self, const int index)
+{
+  index_m(Int, self, index, Minput);
+}
+
 static Int Lpush(Int self)
 {
   {
-    New(Int, new); // 末尾に追加するインスタンスを生成
+    New(Int, new); // 末尾に追加するインスタンスを生成 new
 
     if (!self) {
       self = new;
@@ -146,18 +166,14 @@ static Int Lpush(Int self)
 
 static Int Leach(Int self, void (Method func)(Int self))
 {
-  {
-    each_m(Int, self, func);
-  }
+  each_m(Int, self, func);
 
   return self;
 }
 
 static Int Leach_with_index(Int self, void (Method func)(Int self, Int index))
 {
-  {
-    each_with_index_m(Int, self, func);
-  }
+  each_with_index_m(Int, self, func);
 
   return self;
 }
@@ -170,36 +186,36 @@ static void each_print(Int self)
 static Int Lprint(Int self)
 {
   {
-    Int size = Lsize(self);
+    Int size = Lsize(self); // selfのノードの数 size
   
     if (Mget(size) == 1) {
       Mprint(self);
     } else {
-      Init(String, l, "[ ");
-      Init(String, r, "] ");
+      Init(String, left, "[ ");  // 配列の左括弧 left bracket
+      Init(String, right, "] "); // 配列の右括弧 right bracket
 
-      Print(l)->delete(l);
+      Print(left)->delete(left);
       Leach(self, each_print);
-      Print(r)->delete(r); putchar('\n');
+      Print(right)->delete(right); putchar('\n');
     }
   }
 
   return self;
 }
 
-#define each_input(self, i) Print(i); Print(c); Minput(p);
+#define each_input(self, i) Print(i); Print(prompt); Minput(p);
 
 static Int Linput(Int self)
 {
   {
-    Int size = Lsize(self);
+    Int size = Lsize(self); // selfのノードの数 size
 
     if (Mget(size) == 1) {
       Minput(self);
     } else {
-      Init(String, c, " > ");
+      Init(String, prompt, " > "); // 入力時に表示するプロンプト prompt 
       each_with_index_m(Int, self, each_input);
-      Delete(c);
+      Delete(prompt);
     }
   }
 
@@ -208,7 +224,7 @@ static Int Linput(Int self)
 
 Int Int_new(void)
 {
-  Int new = (Int) malloc(sizeof(Int_t)); // 新しいStringクラスのインスタンスのメモリを確保 new
+  Int new = (Int) malloc(sizeof(Int_t)); // 新しいIntクラスのインスタンスのメモリを確保 new
   if (!new) {
     exit(EXIT_FAILURE);
   } else {
@@ -216,6 +232,7 @@ Int Int_new(void)
       .prev    = NULL,
       .next    = NULL,
       .self    = new,
+      
       .delete  = Ldelete,
       .getR    = MgetR,
       .get     = Mget,
@@ -223,14 +240,24 @@ Int Int_new(void)
       .to_s    = Mto_s,
       .input   = Minput,
       .print   = Mprint,
+      
       .first   = Lfirst,
       .last    = Llast,
       .element = Lelement,
       .size    = Lsize,
+      
+      .getRI   = LgetRI,
+      .getI    = LgetI,
+      .setI    = LsetI,
+      .to_sI   = Lto_sI,
+      .inputI  = LinputI,
+      .printI  = LprintI,
+      
       .push    = Lpush,
-      .each    = Leach,
       .inputA  = Linput,
       .printA  = Lprint,
+      
+      .each    = Leach,
       .each_with_index = Leach_with_index,
     };
 
@@ -242,7 +269,7 @@ Int Int_new(void)
 
 Int Int_init(const int num)
 {
-  New(Int, new);
+  New(Int, new); // 新しいインスタンスを生成 new
   Set(new, num);
 
   return new;
@@ -250,7 +277,7 @@ Int Int_init(const int num)
 
 Int Int_arrayNew(const int index)
 {
-  New(Int, new);
+  New(Int, new); // 新しいインスタンスを生成 new
   
   {
     int i;

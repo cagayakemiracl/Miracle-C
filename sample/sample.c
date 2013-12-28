@@ -16,7 +16,7 @@ int main(void)
     
     Set(i, 1);
     Push(i);
-    index_two_m(Int, i, 1, Set, 2);
+    SetI(i, 1, 2);
     PrintA(i)->delete(i);
   }
   

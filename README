@@ -31,3 +31,10 @@ Input(s)->print(s)->delete(s);
 使い終わったインスタンスはDeleteマクロもしくはdeleteインスタンスメソッドで削除してください
 Delete(i);
 i->delete(i);
+
+配列を作る事もできます
+ArrayNew(Int, i, 5);
+
+簡単なサンプルコードも用意してます
+sample/sample.c
+makeコマンドでコンパイル出来るはずです

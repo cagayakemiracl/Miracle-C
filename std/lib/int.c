@@ -107,14 +107,14 @@ static Int Lsize(Int self)
 {
   Init(Int, i, 0);
 
-  for ( ; self; ++Get(i, 0), self = self->next) {
+  for ( ; self; ++Get(i), self = self->next) {
     ;
   }
 
   return i;
 }
     
-static Int Lselect(Int self, const int num)
+static Int Lelement(Int self, const int num)
 {
   {
     int i; // 一時変数
@@ -125,34 +125,6 @@ static Int Lselect(Int self, const int num)
   }
 
   return self;
-}
-
-static intR LgetR(Int self, const int index)
-{
-  self = Lselect(self, index);
-
-  return MgetR(self);
-}
-
-static int Lget(Int self, const int index)
-{
-  self = Lselect(self, index);
-
-  return Mget(self);
-}
-
-static Int Lset(Int self, const int index, const int num)
-{
-  self = Lselect(self, index);
-
-  return Mset(self, num);
-}
-
-static String Lto_s(Int self, const int index)
-{
-  self = Lselect(self, index);
-
-  return Mto_s(self);
 }
 
 static Int Lpush(Int self)
@@ -172,37 +144,63 @@ static Int Lpush(Int self)
   return self;
 }
 
-static Int Lprint(Int self)
+static Int Leach(Int self, void (Method func)(Int self))
 {
   {
-    Int p;
-    Init(String, l, "[ ");
-    Init(String, r, "] ");
-
-    Print(l)->delete(l);
-    for (p = self; p; p = p->next) {
-      Mprint(p); putchar(' ');
-    }
-    
-    Print(r)->delete(r);
+    each_m(Int, self, func);
   }
 
   return self;
 }
 
+static Int Leach_with_index(Int self, void (Method func)(Int self, Int index))
+{
+  {
+    each_with_index_m(Int, self, func);
+  }
+
+  return self;
+}
+
+static void each_print(Int self)
+{
+  Mprint(self); putchar(' ');
+}
+
+static Int Lprint(Int self)
+{
+  {
+    Int size = Lsize(self);
+  
+    if (Mget(size) == 1) {
+      Mprint(self);
+    } else {
+      Init(String, l, "[ ");
+      Init(String, r, "] ");
+
+      Print(l)->delete(l);
+      Leach(self, each_print);
+      Print(r)->delete(r); putchar('\n');
+    }
+  }
+
+  return self;
+}
+
+#define each_input(self, i) Print(i); Print(c); Minput(p);
+
 static Int Linput(Int self)
 {
   {
-    Int p;
-    Init(Int, i, 0);
-    Init(String, c, " > ");
+    Int size = Lsize(self);
 
-    for (p = self; p; ++Get(i, 0), p = p->next) {
-      Print(i); Print(c);
-      Minput(p);
+    if (Mget(size) == 1) {
+      Minput(self);
+    } else {
+      Init(String, c, " > ");
+      each_with_index_m(Int, self, each_input);
+      Delete(c);
     }
-
-    Delete(i); Delete(c);
   }
 
   return self;
@@ -215,21 +213,25 @@ Int Int_new(void)
     exit(EXIT_FAILURE);
   } else {
     const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
-      .prev   = NULL,
-      .next   = NULL,
-      .self   = new,
-      .delete = Ldelete,
-      .getR   = LgetR,
-      .get    = Lget,
-      .set    = Lset,
-      .first  = Lfirst,
-      .last   = Llast,
-      .select = Lselect,
-      .size   = Lsize,
-      .to_s   = Lto_s,
-      .input  = Linput,
-      .print  = Lprint,
-      .push   = Lpush,
+      .prev    = NULL,
+      .next    = NULL,
+      .self    = new,
+      .delete  = Ldelete,
+      .getR    = MgetR,
+      .get     = Mget,
+      .set     = Mset,
+      .to_s    = Mto_s,
+      .input   = Minput,
+      .print   = Mprint,
+      .first   = Lfirst,
+      .last    = Llast,
+      .element = Lelement,
+      .size    = Lsize,
+      .push    = Lpush,
+      .each    = Leach,
+      .inputA  = Linput,
+      .printA  = Lprint,
+      .each_with_index = Leach_with_index,
     };
 
     *new = tmp;
@@ -241,7 +243,22 @@ Int Int_new(void)
 Int Int_init(const int num)
 {
   New(Int, new);
-  Set(new, 0, num);
+  Set(new, num);
+
+  return new;
+}
+
+Int Int_arrayNew(const int index)
+{
+  New(Int, new);
+  
+  {
+    int i;
+
+    for (i = 1; i < index; ++i) {
+      Push(new);
+    }
+  }
 
   return new;
 }

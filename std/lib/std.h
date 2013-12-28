@@ -24,26 +24,62 @@ String String_init(const string field); // Stringクラスのインスタンス�
 Class(Int);                    // Intクラスの宣言
 Int Int_new(void);             // Intクラスのインスタンスを生成
 Int Int_init(const int field); // Intクラスのインスタンスを生成し値をfieldで初期化
+Int Int_arrayNew(const int index);
 
 #define Method *const // インスタンスメソッドを定義するマクロ
 
+#define each_m(type, self, func)                  \
+  {                                             \
+    type p;                                     \
+    for (p = self; p; p = p->next) {            \
+      func(p);                                  \
+    }                                           \
+  }                                             \
+    
+#define each_with_index_m(type, self, func)       \
+  {                                             \
+    type p;                                     \
+    Init(Int, i, 0);                            \
+    for (p = self; p; ++Get(i), p = p->next) {  \
+      func(p, i);                               \
+    }                                           \
+    Delete(i);                                  \
+  }                                             \
+
+#define index_m(type, self, index, func)          \
+  {                                             \
+    type t = Element(self, index);              \
+    func(t);                                    \
+  }                                             \
+  
+#define index_two_m(type, self, index, func, field) \
+  {                                               \
+    type t = Element(self, index);                \
+    func(t, field);                               \
+  }                                               \
+    
 #include "../include/string.h"
 #include "../include/int.h"
 
 // インスタンスメソッドを簡単に使うためのシンタックスシュガー
 #define Delete(s) (s->delete(s))
-#define Set(s, i, d) (s->set(s, i, d))
+#define Set(s, d) (s->set(s, d))
 #define To_i(s)   (s->to_i(s))
-#define To_s(s, i)   (s->to_s(s, i))
+#define To_s(s)   (s->to_s(s))
 #define Input(s)  (s->input(s))
 #define Print(s)  (s->print(s))
-#define Push(s)   (s->push(s))
 
-#define GetR(s, i)   (s->getR(s, i))
-#define Get(s, i)    (*GetR(s, i))
+#define GetR(s) (s->getR(s))
+#define Get(s)  (*GetR(s))
+
+#define Element(s, n) (s->element(s, n))
+#define Push(s)   (s->push(s))
+#define InputA(s) (s->inputA(s))
+#define PrintA(s) (s->printA(s))
 
 // インスタンスを生成するクラスメソッドを簡単に使うためのシンタックスシュガー
 #define New(t, v) t v = t##_new()
 #define Init(t, v, i) t v = t##_init(i)
+#define ArrayNew(t, v, i) t v = t##_arrayNew(i)
 
 #endif

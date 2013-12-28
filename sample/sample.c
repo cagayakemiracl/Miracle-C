@@ -1,25 +1,29 @@
 /*
-  入力した整数をStringクラスのインスタンスに変換して表示するサンプルプログラム
+  整数の配列を作成し入力して出力するサンプルプログラム
 */
 
 #include "../miracle.h"
+
+void each_print(Int self)
+{
+  Print(self); putchar(' ');
+}
 
 int main(void)
 {
   {
     New(Int, i);
-
+    
+    Set(i, 1);
     Push(i);
-    Set(i, 0, 1);
-    Set(i, 1, 2);
-    Print(i)->delete(i); putchar('\n');
+    index_two_m(Int, i, 1, Set, 2);
+    PrintA(i)->delete(i);
   }
   
   {
-    New(Int, i);
+    ArrayNew(Int, i, 3);
 
-    Push(i);
-    Input(i)->print(i)->delete(i); putchar('\n');
+    InputA(i)->each(i, each_print)->delete(i); putchar('\n');
   }
   
   return 0;

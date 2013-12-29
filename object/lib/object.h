@@ -1,6 +1,10 @@
 #ifndef _OBJECT_H_INCLUDED_
 #define _OBJECT_H_INCLUDED_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 // Classを定義するためのマクロ
 #define Class(c) \
 typedef struct _##c * c; \

@@ -3,10 +3,6 @@
 
 #include "../../object/lib/object.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #define STRING_SIZE 255           // 入力最大文字数(string型の大きさ)
 typedef char string[STRING_SIZE]; // string型の定義
 typedef string *stringR;          // string型のポインタ

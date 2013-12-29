@@ -321,7 +321,7 @@ Int Int_init(const int num)
 
 Int Int_newA(const int index)
 {
-  Int new; // 新しいインスタンスを生成 new
+  Int new = NULL; // 新しいインスタンスを生成 new
   {
     int i;
 

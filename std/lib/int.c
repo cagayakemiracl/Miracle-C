@@ -64,6 +64,13 @@ static Int Mprint(Int self)
   return self;
 }
 
+static Int Mdup(Int self)
+{
+  Init(Int, copy, Mget(self)); // selfと同じ内容のインスタンス
+
+  return copy;
+}
+
 static void Ldelete(Int self)
 {
   Int next; // 開放したインスタンスのnextポインタを保存 next
@@ -147,21 +154,35 @@ static Int LinputI(Int self, const int index)
   index_m(Int, self, index, Minput);
 }
 
+static Int Ldup(Int self)
+{
+  Int copy = Mdup(self); // selfと同じ内容のインスタンス
+
+  copy->prev = self->prev;
+  copy->next = self->next;
+  copy->self = self->self;
+  
+  return copy;
+}
+
+static Int LsenseHart(Int self, Int add)
+{  
+  if (!self) {
+    self = add;
+  } else {
+    Int tail = Llast(self); // selfの最後の要素を指す tail
+    tail->next = add;
+    add->prev = tail;
+  }
+
+  return self;
+}
+
 static Int Lpush(Int self)
 {
-  {
-    New(Int, new); // 末尾に追加するインスタンスを生成 new
-
-    if (!self) {
-      self = new;
-    } else {
-      Int tail = Llast(self); // selfの最後の要素を指す tail
-      tail->next = new;
-      new->prev = tail;
-    }
-  }
+  New(Int, new); // 末尾に追加するインスタンスを生成 new
   
-  return self;
+  return LsenseHart(self, new);
 }
 
 static Int Leach(Int self, void (Method func)(Int self))
@@ -222,6 +243,23 @@ static Int Linput(Int self)
   return self;
 }
 
+#define each_fill(self) Mset(self, field);
+
+static Int Lfill(Int self, const int field)
+{
+  {
+    Int size = Lsize(self); // selfのノードの数 size
+
+    if (Mget(size) == 1) {
+      Mset(self, field);
+    } else {
+      each_m(Int, self, each_fill);
+    }
+  }
+
+  return self;
+}
+
 Int Int_new(void)
 {
   Int new = (Int) malloc(sizeof(Int_t)); // 新しいIntクラスのインスタンスのメモリを確保 new
@@ -229,36 +267,40 @@ Int Int_new(void)
     exit(EXIT_FAILURE);
   } else {
     const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
-      .prev    = NULL,
-      .next    = NULL,
-      .self    = new,
+      .prev = NULL,
+      .next = NULL,
+      .self = new,
       
-      .delete  = Ldelete,
-      .getR    = MgetR,
-      .get     = Mget,
-      .set     = Mset,
-      .to_s    = Mto_s,
-      .input   = Minput,
-      .print   = Mprint,
+      .delete = Ldelete,
+      .getR   = MgetR,
+      .get    = Mget,
+      .set    = Mset,
+      .dup    = Ldup,
+      .to_s   = Mto_s,
+      .input  = Minput,
+      .print  = Mprint,
       
       .first   = Lfirst,
       .last    = Llast,
       .element = Lelement,
       .size    = Lsize,
       
-      .getRI   = LgetRI,
-      .getI    = LgetI,
-      .setI    = LsetI,
-      .to_sI   = Lto_sI,
-      .inputI  = LinputI,
-      .printI  = LprintI,
+      .getRI  = LgetRI,
+      .getI   = LgetI,
+      .setI   = LsetI,
+      .to_sI  = Lto_sI,
+      .inputI = LinputI,
+      .printI = LprintI,
+
+      .senseHart = LsenseHart,
+      .push      = Lpush,
       
-      .push    = Lpush,
-      .inputA  = Linput,
-      .printA  = Lprint,
+      .fill   = Lfill,
+      .inputA = Linput,
+      .printA = Lprint,
       
-      .each    = Leach,
-      .eachI   = LeachI,
+      .each  = Leach,
+      .eachI = LeachI,
     };
 
     *new = tmp;

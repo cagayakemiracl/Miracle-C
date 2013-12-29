@@ -62,6 +62,6 @@ typedef struct _##c * c; \
 // インスタンスを生成するクラスメソッドを簡単に使うためのシンタックスシュガー
 #define New(t, v) t v = t##_new()
 #define Init(t, v, i) t v = t##_init(i)
-#define ArrayNew(t, v, i) t v = t##_arrayNew(i)
+#define ArrayNew(t, v, i) t v = t##_newA(i)
 
 #endif

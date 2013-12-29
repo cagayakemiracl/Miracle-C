@@ -12,4 +12,4 @@ $(TARGET):
 
 clean:
 	cd std/lib; make clean;
-	rm -rf $(TARGET) *~
+	rm -rf $(TARGET) __.SYMDEF\ SORTED *~

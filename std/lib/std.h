@@ -22,7 +22,7 @@ String String_init(const string field); // Stringクラスのインスタンス�
 Class(Int);                    // Intクラスの宣言
 Int Int_new(void);             // Intクラスのインスタンスを生成
 Int Int_init(const int field); // Intクラスのインスタンスを生成し値をfieldで初期化
-Int Int_arrayNew(const int index);
+Int Int_newA(const int index); // Intkクラスの配列インスタンスを生成
 
 #include "../include/string.h"
 #include "../include/int.h"

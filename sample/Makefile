@@ -22,4 +22,4 @@ $(TARGET):
 
 clean:
 	cd ../; make clean;
-	rm -rf $(TARGET) *~
+	rm -rf $(TARGET) $(TARGET).dSYM *~

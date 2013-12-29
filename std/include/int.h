@@ -24,19 +24,19 @@ typedef struct _Int {
   Int (Method element)(Int self, const int num); // 配列のnum番目の要素を返す
   Int (Method size)(Int self);                   // 配列の大きさを返す
 
-  intR (Method getRI)(Int self, const int index); // 要素indexのself->fieldのポインタを返す
-  int (Method getI)(Int self, const int index);  // 要素indexのself->fieldnの値を返す
+  intR (Method getRI)(Int self, const int index);                // 要素indexのself->fieldのポインタを返す
+  int (Method getI)(Int self, const int index);                  // 要素indexのself->fieldnの値を返す
   Int (Method setI)(Int self, const int index, const int field); // 要素indexのself->fieldをfieldに変更
-  String (Method to_sI)(Int self, const int index); // 要素indexをStringクラスのインスタンスに変換
-  Int (Method inputI)(Int self, const int index);  // 要素indexを入力
-  Int (Method printI)(Int self, const int index); // 要素indexを出力
+  String (Method to_sI)(Int self, const int index);              // 要素indexをStringクラスのインスタンスに変換
+  Int (Method inputI)(Int self, const int index);                // 要素indexを入力
+  Int (Method printI)(Int self, const int index);                // 要素indexを出力
   
   Int (Method push)(Int self);   // 末尾に要素を追加
   Int (Method inputA)(Int self); // 入力関数(配列の全要素)
   Int (Method printA)(Int self); // 出力関数(配列の全要素)
   
   Int (Method each)(Int self, void (Method func)(Int self));
-  Int (Method each_with_index)(Int self, void (Method func)(Int self, Int index));
+  Int (Method eachI)(Int self, void (Method func)(Int self, Int index));
 } Int_t;
 
 #endif

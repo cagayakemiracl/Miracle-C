@@ -171,7 +171,7 @@ static Int Leach(Int self, void (Method func)(Int self))
   return self;
 }
 
-static Int Leach_with_index(Int self, void (Method func)(Int self, Int index))
+static Int LeachI(Int self, void (Method func)(Int self, Int index))
 {
   each_with_index_m(Int, self, func);
 
@@ -258,7 +258,7 @@ Int Int_new(void)
       .printA  = Lprint,
       
       .each    = Leach,
-      .each_with_index = Leach_with_index,
+      .eachI   = LeachI,
     };
 
     *new = tmp;
@@ -275,7 +275,7 @@ Int Int_init(const int num)
   return new;
 }
 
-Int Int_arrayNew(const int index)
+Int Int_newA(const int index)
 {
   New(Int, new); // 新しいインスタンスを生成 new
   

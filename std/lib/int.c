@@ -69,17 +69,6 @@ static Int Mdup(Int self)
   return Int_init(Mget(self));
 }
 
-static void Ldelete(Int self)
-{
-  Int next; // 開放したインスタンスのnextポインタを保存 next
-
-  while (self) {
-    next = self->next;
-    Mdelete(self);
-    self = next;
-  }
-}
-
 static Int Lfirst(Int self)
 {
   for ( ; self->prev; self = self->prev) {
@@ -142,14 +131,14 @@ static String Lto_sI(Int self, const int index)
   index_m(Int, self, index, Mto_s);
 }
 
-static Int LprintI(Int self, const int index)
-{
-  index_m(Int, self, index, Mprint);
-}
-
 static Int LinputI(Int self, const int index)
 {
   index_m(Int, self, index, Minput);
+}
+
+static Int LprintI(Int self, const int index)
+{
+  index_m(Int, self, index, Mprint);
 }
 
 static Int LsenseHart(Int self, Int add)
@@ -172,16 +161,30 @@ static Int Lpush(Int self)
   return LsenseHart(self, new);
 }
 
-static Int Leach(Int self, void (Method func)(Int self))
+static void Ldelete(Int self)
 {
-  each_m(Int, self, func);
+  Int next; // 開放したインスタンスのnextポインタを保存 next
 
-  return self;
+  while (self) {
+    next = self->next;
+    Mdelete(self);
+    self = next;
+  }
 }
 
-static Int LeachI(Int self, void (Method func)(Int self, Int index))
+#define each_fill(self) Mset(self, field);
+
+static Int Lfill(Int self, const int field)
 {
-  each_with_index_m(Int, self, func);
+  {
+    Int size = Lsize(self); // selfのノードの数 size
+
+    if (Mget(size) == 1) {
+      Mset(self, field);
+    } else {
+      each_m(Int, self, each_fill);
+    }
+  }
 
   return self;
 }
@@ -195,31 +198,6 @@ static Int Ldup(Int self)
   each_m(Int, self, each_dup);
   
   return copy;
-}
-
-static void each_print(Int self)
-{
-  Mprint(self); putchar(' ');
-}
-
-static Int Lprint(Int self)
-{
-  {
-    Int size = Lsize(self); // selfのノードの数 size
-  
-    if (Mget(size) == 1) {
-      Mprint(self);
-    } else {
-      Init(String, left, "[ ");  // 配列の左括弧 left bracket
-      Init(String, right, "] "); // 配列の右括弧 right bracket
-
-      Print(left)->delete(left);
-      Leach(self, each_print);
-      Print(right)->delete(right); putchar('\n');
-    }
-  }
-
-  return self;
 }
 
 #define each_input(self, i) Print(i); Print(prompt); Minput(p);
@@ -241,19 +219,38 @@ static Int Linput(Int self)
   return self;
 }
 
-#define each_fill(self) Mset(self, field);
+#define each_print(self) Mprint(self); putchar(' ');
 
-static Int Lfill(Int self, const int field)
+static Int Lprint(Int self)
 {
   {
     Int size = Lsize(self); // selfのノードの数 size
-
+  
     if (Mget(size) == 1) {
-      Mset(self, field);
+      Mprint(self);
     } else {
-      each_m(Int, self, each_fill);
+      Init(String, left, "[ ");  // 配列の左括弧 left bracket
+      Init(String, right, "] "); // 配列の右括弧 right bracket
+
+      Print(left)->delete(left);
+      each_m(Int, self, each_print);
+      Print(right)->delete(right); putchar('\n');
     }
   }
+
+  return self;
+}
+
+static Int Leach(Int self, void (Method func)(Int self))
+{
+  each_m(Int, self, func);
+
+  return self;
+}
+
+static Int LeachI(Int self, void (Method func)(Int self, Int index))
+{
+  each_with_index_m(Int, self, func);
 
   return self;
 }
@@ -269,11 +266,9 @@ Int Int_new(void)
       .next = NULL,
       .self = new,
       
-      .delete = Ldelete,
       .getR   = MgetR,
       .get    = Mget,
       .set    = Mset,
-      .dup    = Ldup,
       .to_s   = Mto_s,
       .input  = Minput,
       .print  = Mprint,
@@ -292,8 +287,10 @@ Int Int_new(void)
 
       .senseHart = LsenseHart,
       .push      = Lpush,
-      
+
+      .delete = Ldelete,
       .fill   = Lfill,
+      .dup    = Ldup,
       .inputA = Linput,
       .printA = Lprint,
       

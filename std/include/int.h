@@ -7,12 +7,11 @@ String int_to_s(const int num); // int型変数をStringクラスのインスタ
 typedef struct _Int {
   Int prev; // 双方向リスト
   Int next;
-  Int self; // Intクラスの実体を指す
+  Int self; // Intクラスの実体を指す 多次元配列を実現するために使う
   
   int field; // int型のインスタンス変数
 
   // 要素が一つのインスタンスに対するメソッド
-  void (Method delete)(Int self);              // インスタンスを削除
   intR (Method getR)(Int self);                // self->fieldのポインタを返す
   int (Method get)(Int self);                  // self->fieldの値を返す
   Int (Method set)(Int self, const int field); // self->fieldをfieldに変更
@@ -24,7 +23,6 @@ typedef struct _Int {
   Int (Method first)(Int self);                  // 配列の先頭の要素を返す
   Int (Method last)(Int self);                   // 配列の最後の要素を返す
   Int (Method element)(Int self, const int num); // 配列のnum番目の要素を返す
-  Int (Method dup)(Int self);                    // selfをコピー
   Int (Method size)(Int self);                   // 配列の大きさを返す
 
   // 要素indexの一つのインスタンスに対するメソッド
@@ -36,11 +34,13 @@ typedef struct _Int {
   Int (Method printI)(Int self, const int index);                // 出力
 
   // 貴女と合体したい
-  Int (Method senseHart)(Int self, Int add); // うお〜〜！！燃える〜！！！
-  Int (Method push)(Int self);               // ゼーロテュピアーグラディウス!
+  Int (Method senseHart)(Int self, Int add); // うお〜〜！！燃える〜！！！(selfの末尾にaddをくっつける)
+  Int (Method push)(Int self);               // ゼーロテュピアーグラディウス!(selfの末尾に新しいインスタンスをくっつける)
   
-  // (配列の全要素)に反映するメソッド
+  // 配列の全要素に反映するメソッド
+  void (Method delete)(Int self);                // インスタンスを削除
   Int (Method fill)(Int self, const int field);  // self->fieldをfieldで初期化
+  Int (Method dup)(Int self);                    // selfをコピー
   Int (Method inputA)(Int self);                 // 入力
   Int (Method printA)(Int self);                 // 出力
 

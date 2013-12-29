@@ -26,7 +26,7 @@ String s = To_s(i); Dealloc(i);
 
 Stringクラスのインスタンスを入力して表示する場合は
 New(String, s);
-get(s)->put(s)->dealloc(s);
+Get(s)->put(s)->dealloc(s);
 
 使い終わったインスタンスはDeallocマクロもしくはdeallocインスタンスメソッドで削除してください
 Dealloc(i);

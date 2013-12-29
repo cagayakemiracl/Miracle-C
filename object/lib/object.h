@@ -46,6 +46,7 @@ typedef struct _##c * c; \
 #define First(s)      (s->first(s))
 #define Last(s)       (s->last(s))
 #define Element(s, n) (s->element(s, n))
+#define Dup(s)        (s->dup(s))
 #define Size(s)       (s->size(s))
 
 #define GetRI(s, i)   (s->getRI(s, i))
@@ -55,10 +56,16 @@ typedef struct _##c * c; \
 #define PrintI(s, i)  (s->printI(s, i))
 #define InputI(s, i)  (s->inputI(s, i))
 
-#define Push(s)   (s->push(s))
-#define InputA(s) (s->inputA(s))
-#define PrintA(s) (s->printA(s))
+#define SenseHart(s, a) (s->senseHart(s, a))
+#define Push(s)         (s->push(s))
+  
+#define Fill(s, f)   (s->fill(s, f))
+#define InputA(s)    (s->inputA(s))
+#define PrintA(s)    (s->printA(s))
 
+#define Each(s, f)  (s->each(s, f))
+#define EachI(s, f) (s->eachI(s, f))
+  
 // インスタンスを生成するクラスメソッドを簡単に使うためのシンタックスシュガー
 #define New(t, v) t v = t##_new()
 #define Init(t, v, i) t v = t##_init(i)

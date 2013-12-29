@@ -12,16 +12,28 @@ void each_print(Int self)
 int main(void)
 {
   {
-    New(Int, i);
+    New(Int, i); // Intクラスのインスタンス生成(要素数1)
     
     Set(i, 1);
     Push(i);
     SetI(i, 1, 2);
     PrintA(i)->delete(i);
   }
-  
+
   {
-    ArrayNew(Int, i, 3);
+    ArrayNew(Int, i, 5); // 要素が５のIntクラスのインスタンス生成
+    
+    Fill(i, 3);
+    { 
+      Int c = i->dup(i); // iのコピー
+      
+      Fill(c, 9)->printA(c)->delete(c);
+    }
+    PrintA(i)->delete(i);
+  }
+
+  {
+    ArrayNew(Int, i, 3); // 要素が３のIntクラス生成
 
     InputA(i)->each(i, each_print)->delete(i); putchar('\n');
   }

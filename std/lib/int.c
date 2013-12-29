@@ -66,9 +66,7 @@ static Int Mprint(Int self)
 
 static Int Mdup(Int self)
 {
-  Init(Int, copy, Mget(self)); // selfと同じ内容のインスタンス
-
-  return copy;
+  return Int_init(Mget(self));
 }
 
 static void Ldelete(Int self)
@@ -154,17 +152,6 @@ static Int LinputI(Int self, const int index)
   index_m(Int, self, index, Minput);
 }
 
-static Int Ldup(Int self)
-{
-  Int copy = Mdup(self); // selfと同じ内容のインスタンス
-
-  copy->prev = self->prev;
-  copy->next = self->next;
-  copy->self = self->self;
-  
-  return copy;
-}
-
 static Int LsenseHart(Int self, Int add)
 {  
   if (!self) {
@@ -197,6 +184,17 @@ static Int LeachI(Int self, void (Method func)(Int self, Int index))
   each_with_index_m(Int, self, func);
 
   return self;
+}
+
+#define each_dup(self) copy = LsenseHart(copy, Mdup(self))
+
+static Int Ldup(Int self)
+{
+  Int copy = NULL; // selfと同じ内容のインスタンス
+
+  each_m(Int, self, each_dup);
+  
+  return copy;
 }
 
 static void each_print(Int self)

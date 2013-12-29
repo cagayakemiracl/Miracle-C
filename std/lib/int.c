@@ -9,64 +9,49 @@ String int_to_s(const int num)
   return String_init(str);
 }
 
-static void int_input(intR num)
+static void int_get(intR num)
 {
   string str; // 入力した文字列を格納 string
 
-  string_input(str);
+  string_get(str);
   *num = 0;
   sscanf(str, "%d", num);
 }
 
-static void int_print(const int num)
+static void int_put(const int num)
 {
   printf("%d", num);
 }
 
-static void Mdelete(Int self)
-{
-  free(self);
-}
-
-static intR MgetR(Int self)
-{
-  return &(self->field);
-}
-
-static int Mget(Int self)
-{
-  return self->field;
-}
-
 static Int Mset(Int self, const int field)
 {
-  *MgetR(self) = field;
+  self->field = field;
   
   return self;
 }
 
 static String Mto_s(Int self)
 {
-  return int_to_s(Mget(self));
+  return int_to_s(self->field);
 }
 
-static Int Minput(Int self)
+static Int Mget(Int self)
 {
-  int_input(MgetR(self));
+  int_get(&(self->field));
 
   return self;
 }
 
-static Int Mprint(Int self)
+static Int Mput(Int self)
 {
-  int_print(Mget(self));
+  int_put(self->field);
 
   return self;
 }
 
 static Int Mdup(Int self)
 {
-  return Int_init(Mget(self));
+  return Int_init(self->field);
 }
 
 static Int Lfirst(Int self)
@@ -87,12 +72,12 @@ static Int Llast(Int self)
   return self;
 }
 
-static Int Lelement(Int self, const int num)
+static Int Lat(Int self, const int index)
 {
   {
     int i; // 一時変数 index
     
-    for (i = 0; self->next && (i < num); ++i, self = self->next) {
+    for (i = 0; self->next && (i < index); ++i, self = self->next) {
       ;
     }
   }
@@ -104,70 +89,75 @@ static Int Lsize(Int self)
 {
   Init(Int, size, 0); // selfのノードの数 大きさ size
 
-  for ( ; self; ++Get(size), self = self->next) {
+  for ( ; self; ++(size->field), self = self->next) {
     ;
   }
 
   return size;
 }
 
-static intR LgetRI(Int self, const int index)
+static Int Lset_at(Int self, const int index, const int field)
 {
-  index_m(Int, self, index, MgetR);
+  Int p = Lat(self, index); // index要素のインスタンス
+
+  Mset(p, field);
+
+  return self;
 }
 
-static int LgetI(Int self, const int index)
-{
-  index_m(Int , self, index, Mget);
-}
-
-static Int LsetI(Int self, const int index, const int field)
-{
-  index_two_m(Int, self, index, Mset, field);
-}
-
-static String Lto_sI(Int self, const int index)
+static String Lto_s_at(Int self, const int index)
 {
   index_m(Int, self, index, Mto_s);
 }
 
-static Int LinputI(Int self, const int index)
+static Int Lget_at(Int self, const int index)
 {
-  index_m(Int, self, index, Minput);
+  Int p = Lat(self, index); // index要素のインスタンス
+
+  Mget(p);
+
+  return self;
 }
 
-static Int LprintI(Int self, const int index)
+static Int Lput_at(Int self, const int index)
 {
-  index_m(Int, self, index, Mprint);
+  Int p = Lat(self, index); // index要素のインスタンス
+
+  Mput(p);
+
+  return self;
 }
 
-static Int LsenseHart(Int self, Int add)
+static Int Lconcat(Int self, Int node)
 {  
   if (!self) {
-    self = add;
+    self = node;
   } else {
     Int tail = Llast(self); // selfの最後の要素を指す tail
-    tail->next = add;
-    add->prev = tail;
+    tail->next = node;
+    node->prev = tail;
   }
 
   return self;
 }
 
-static Int Lpush(Int self)
+static Int Lpush(Int self, const int field)
 {
-  New(Int, new); // 末尾に追加するインスタンスを生成 new
-  
-  return LsenseHart(self, new);
+  return Lconcat(self, Int_init(field));
 }
 
-static void Ldelete(Int self)
+static Int Ladd(Int self)
+{
+  return Lconcat(self, Int_new());
+}
+
+static void Ldealloc(Int self)
 {
   Int next; // 開放したインスタンスのnextポインタを保存 next
 
   while (self) {
     next = self->next;
-    Mdelete(self);
+    free(self);
     self = next;
   }
 }
@@ -177,19 +167,25 @@ static void Ldelete(Int self)
 static Int Lfill(Int self, const int field)
 {
   {
-    Int size = Lsize(self); // selfのノードの数 size
+    int bool; // selfのsizeが１かどうか boolean
+    {
+      Int size = Lsize(self); // selfのノードの数 size
+      bool = (size->field == 1); 
 
-    if (Mget(size) == 1) {
+      Dealloc(size);
+    }
+    
+    if (bool) {
       Mset(self, field);
     } else {
       each_m(Int, self, each_fill);
     }
   }
-
+  
   return self;
 }
 
-#define each_dup(self) copy = LsenseHart(copy, Mdup(self))
+#define each_dup(self) copy = Lconcat(copy, Mdup(self))
 
 static Int Ldup(Int self)
 {
@@ -200,42 +196,56 @@ static Int Ldup(Int self)
   return copy;
 }
 
-#define each_input(self, i) Print(i); Print(prompt); Minput(p);
+#define each_input(self, i) Put(i); Put(prompt); Mget(p);
 
 static Int Linput(Int self)
 {
   {
-    Int size = Lsize(self); // selfのノードの数 size
+    int bool; // selfのsizeが１かどうか boolean
+    {
+      Int size = Lsize(self); // selfのノードの数 size
+      bool = (size->field == 1);
 
-    if (Mget(size) == 1) {
-      Minput(self);
+      Dealloc(size);
+    }
+    
+    if (bool) {
+      Mget(self);
     } else {
       Init(String, prompt, " > "); // 入力時に表示するプロンプト prompt 
       each_with_index_m(Int, self, each_input);
-      Delete(prompt);
+      Dealloc(prompt);
     }
   }
 
   return self;
 }
 
-#define each_print(self) Mprint(self); putchar(' ');
+#define each_print(self) Mput(self); putchar(' ');
 
 static Int Lprint(Int self)
 {
   {
-    Int size = Lsize(self); // selfのノードの数 size
-  
-    if (Mget(size) == 1) {
-      Mprint(self);
+    int bool; // selfのsizeが１かどうか boolean
+    {
+      Int size = Lsize(self); // selfのノードの数 size
+      bool = (size->field == 1);
+
+      Dealloc(size);
+    }
+    
+    if (bool) {
+      Mput(self);
     } else {
       Init(String, left, "[ ");  // 配列の左括弧 left bracket
       Init(String, right, "] "); // 配列の右括弧 right bracket
 
-      Print(left)->delete(left);
+      Put(left)->dealloc(left);
       each_m(Int, self, each_print);
-      Print(right)->delete(right); putchar('\n');
+      Put(right)->dealloc(right);
     }
+
+    putchar('\n');
   }
 
   return self;
@@ -248,7 +258,7 @@ static Int Leach(Int self, void (Method func)(Int self))
   return self;
 }
 
-static Int LeachI(Int self, void (Method func)(Int self, Int index))
+static Int LeachWI(Int self, void (Method func)(Int self, Int index))
 {
   each_with_index_m(Int, self, func);
 
@@ -266,36 +276,33 @@ Int Int_new(void)
       .next = NULL,
       .self = new,
       
-      .getR   = MgetR,
-      .get    = Mget,
-      .set    = Mset,
-      .to_s   = Mto_s,
-      .input  = Minput,
-      .print  = Mprint,
+      .set  = Mset,
+      .to_s = Mto_s,
+      .get  = Mget,
+      .put  = Mput,
       
-      .first   = Lfirst,
-      .last    = Llast,
-      .element = Lelement,
-      .size    = Lsize,
+      .first = Lfirst,
+      .last  = Llast,
+      .at    = Lat,
+      .size  = Lsize,
       
-      .getRI  = LgetRI,
-      .getI   = LgetI,
-      .setI   = LsetI,
-      .to_sI  = Lto_sI,
-      .inputI = LinputI,
-      .printI = LprintI,
+      .set_at  = Lset_at,
+      .to_s_at = Lto_s_at,
+      .get_at  = Lget_at,
+      .put_at  = Lput_at,
 
-      .senseHart = LsenseHart,
-      .push      = Lpush,
+      .concat = Lconcat,
+      .push   = Lpush,
+      .add    = Ladd,
 
-      .delete = Ldelete,
-      .fill   = Lfill,
-      .dup    = Ldup,
-      .inputA = Linput,
-      .printA = Lprint,
+      .dealloc = Ldealloc,
+      .fill    = Lfill,
+      .dup     = Ldup,
+      .input   = Linput,
+      .print   = Lprint,
       
       .each  = Leach,
-      .eachI = LeachI,
+      .eachWI = LeachWI,
     };
 
     *new = tmp;
@@ -314,13 +321,12 @@ Int Int_init(const int num)
 
 Int Int_newA(const int index)
 {
-  New(Int, new); // 新しいインスタンスを生成 new
-  
+  Int new; // 新しいインスタンスを生成 new
   {
     int i;
 
-    for (i = 1; i < index; ++i) {
-      Push(new);
+    for (i = 0; i < index; ++i) {
+      new = Ladd(new);
     }
   }
 

@@ -9,7 +9,7 @@ Int string_to_i(const string str)
   return Int_init(num);
 }
 
-void string_input(charR str)
+void string_get(charR str)
 {
   charR tail; //入力した文字列の末尾をさすポインタ tail
 
@@ -29,52 +29,38 @@ void string_input(charR str)
   }
 }
 
-static void string_print(const string str)
+static void string_put(const string str)
 {
   fputs(str, stdout);
 }
 
-static void Mdelete(String self)
+static void Mdealloc(String self)
 {
   free(self);
 }
 
-static stringR MgetR(String self)
-{
-  return &(self->field);
-}
-
-static charR Mget(String self)
-{
-  return self->field;
-}
-
 static String Mset(String self, const string field)
 {
-  snprintf(Mget(self), STRING_SIZE, "%s", field);
+  snprintf(self->field, STRING_SIZE, "%s", field);
 
   return self;
 }
 
 static Int Mto_i(String self)
 {
-  return string_to_i(Mget(self));
+  return string_to_i(self->field);
 }
 
-static String Minput(String self)
+static String Mget(String self)
 {
-  {
-    string_input(Mget(self));
-  }
+  string_get(self->field);
 
   return self;
 }
 
-static String Mprint(String self)
+static String Mput(String self)
 {
-  {
-    string_print(Mget(self));
-  }
+  string_put(self->field);
 
   return self;
 }
@@ -86,13 +72,11 @@ String String_new(void)
     exit(EXIT_FAILURE);
   } else {
     const String_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
-      .delete = Mdelete,
-      .getR   = MgetR,
-      .get    = Mget,
-      .set    = Mset,
-      .to_i   = Mto_i,
-      .input  = Minput,
-      .print  = Mprint,
+      .dealloc = Mdealloc,
+      .set     = Mset,
+      .to_i    = Mto_i,
+      .get     = Mget,
+      .put     = Mput,
     };
     
     *new = tmp;
@@ -103,7 +87,7 @@ String String_new(void)
 
 String String_init(const string field)
 {
-  New(String, new);
+  New(String, new); // 新しいインスタンスを生成 new
   Mset(new, field);
 
   return new;

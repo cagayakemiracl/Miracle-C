@@ -22,15 +22,15 @@ Init(Int, i, 10);
 この４つは同じです
 
 IntクラスのインスタンスをString(文字列)クラスのインスタンスに変換出来ます
-String s = To_s(i); Delete(i);
+String s = To_s(i); Dealloc(i);
 
 Stringクラスのインスタンスを入力して表示する場合は
 New(String, s);
-Input(s)->print(s)->delete(s);
+get(s)->put(s)->dealloc(s);
 
-使い終わったインスタンスはDeleteマクロもしくはdeleteインスタンスメソッドで削除してください
-Delete(i);
-i->delete(i);
+使い終わったインスタンスはDeallocマクロもしくはdeallocインスタンスメソッドで削除してください
+Dealloc(i);
+i->dealloc(i);
 
 配列を作る事もできます
 ArrayNew(Int, i, 5);

@@ -29,10 +29,21 @@ int main(void)
     Print(i)->dealloc(i);
   }
 
+  /*
   {
     ArrayNew(Int, i, 3); // 要素が３のIntクラス生成
 
     Input(i)->each(i, each_put)->dealloc(i); putchar('\n');
+  }
+  */
+
+  {
+    ArrayNew(Int, i, 2);
+
+    i->aquarion(i, 3);
+    Fill(i, 5);
+    Print(i);
+    Dealloc(i);
   }
 
   return 0;

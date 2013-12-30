@@ -23,6 +23,11 @@ static void int_put(const int num)
   printf("%d", num);
 }
 
+static void Mdealloc(Int self)
+{
+  free(self);
+}
+
 static Int Mset(Int self, const int field)
 {
   self->field = field;
@@ -96,7 +101,7 @@ static Int Lsize(Int self)
   return size;
 }
 
-static Int Lset_at(Int self, const int index, const int field)
+static Int Lset_at(Int self, const int field, const int index)
 {
   Int p = Lat(self, index); // index要素のインスタンス
 
@@ -157,12 +162,12 @@ static void Ldealloc(Int self)
 
   while (self) {
     next = self->next;
-    free(self);
+    Mdealloc(self);
     self = next;
   }
 }
 
-#define each_fill(self) Mset(self, field);
+#define each_fill(p) Mset(p, field);
 
 static Int Lfill(Int self, const int field)
 {
@@ -185,7 +190,7 @@ static Int Lfill(Int self, const int field)
   return self;
 }
 
-#define each_dup(self) copy = Lconcat(copy, Mdup(self))
+#define each_dup(p) copy = Lconcat(copy, Mdup(p))
 
 static Int Ldup(Int self)
 {
@@ -196,7 +201,7 @@ static Int Ldup(Int self)
   return copy;
 }
 
-#define each_input(self, i) Put(i); Put(prompt); Mget(p);
+#define each_input(p, i) Put(i); Put(prompt); Mget(p);
 
 static Int Linput(Int self)
 {
@@ -221,7 +226,7 @@ static Int Linput(Int self)
   return self;
 }
 
-#define each_print(self) Mput(self); putchar(' ');
+#define each_print(p) Mput(p); putchar(' ');
 
 static Int Lprint(Int self)
 {
@@ -244,8 +249,6 @@ static Int Lprint(Int self)
       each_m(Int, self, each_print);
       Put(right)->dealloc(right);
     }
-
-    putchar('\n');
   }
 
   return self;
@@ -262,6 +265,95 @@ static Int LeachWI(Int self, void (Method func)(Int self, Int index))
 {
   each_with_index_m(Int, self, func);
 
+  return self;
+}
+
+static Int Agenesis(Int self, Int node)
+{
+  self->self = node;
+
+  return self;
+}
+
+#define each_unite(p) p->self = Ldup(node);
+
+static Int Aunite(Int self, Int node)
+{
+  each_m(Int, self, each_unite);
+
+  return self;
+}
+
+#define each_aquarion(p) p->self = Int_newA(index);
+
+static Int Aaquarion(Int self, const int index)
+{
+  each_m(Int, self, each_aquarion);
+
+  return self;
+}
+
+static Int Afill(Int self, const int field);
+static Int Tfill(Int self, const int field)
+{
+  if (self->self == self) {
+    return Lfill(self, field);
+  }
+  
+  if (self->next) {
+    Afill(self->next, field);
+  }
+  
+  return Tfill(self->self, field);
+}
+
+static Int Afill(Int self, const int field)
+{
+  if (self->self == self) {
+    return Lfill(self, field);
+  }
+  
+  Tfill(self->self, field);
+  if (self->next) {
+    return Afill(self->next, field);
+  }
+
+  return self;
+}
+
+static Int Ainput(Int self);
+static Int Tinput(Int self)
+{
+}
+
+static Int Aprint(Int self);
+static Int Tprint(Int self)
+{
+  if (self->self == self) {
+    return Lprint(self);
+  }
+  
+  if (self->next) {
+    Aprint(self->next);
+  }
+  
+  return Tprint(self->self);
+  
+}
+
+static Int Aprint(Int self)
+{
+  if (self->self == self) {
+    Lprint(self);
+  } else {
+    Tprint(self->self);
+    if (self->next) {
+      return Aprint(self->next);
+    }
+  }
+
+  putchar('\n');
+  
   return self;
 }
 
@@ -294,12 +386,15 @@ Int Int_new(void)
       .concat = Lconcat,
       .push   = Lpush,
       .add    = Ladd,
-
+      .genesis = Agenesis,
+      .unite  = Aunite,
+      .aquarion =Aaquarion,
+      
       .dealloc = Ldealloc,
-      .fill    = Lfill,
+      .fill    = Afill,
       .dup     = Ldup,
       .input   = Linput,
-      .print   = Lprint,
+      .print   = Aprint,
       
       .each  = Leach,
       .eachWI = LeachWI,
@@ -311,10 +406,10 @@ Int Int_new(void)
   return new;
 }
 
-Int Int_init(const int num)
+Int Int_init(const int field)
 {
   New(Int, new); // 新しいインスタンスを生成 new
-  Set(new, num);
+  Set(new, field);
 
   return new;
 }

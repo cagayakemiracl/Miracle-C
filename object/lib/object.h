@@ -1,13 +1,12 @@
 #ifndef _OBJECT_H_INCLUDED_
 #define _OBJECT_H_INCLUDED_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 // Classを定義するためのマクロ
-#define Class(c) \
-typedef struct _##c * c; \
+#define Class(C, c)                             \
+  typedef struct _##C * C;                      \
+  C C##_new(void);                              \
+  C C##_init(const c field);                    \
+  C C##_newA(const int index);                  \
 
 #define Method *const // インスタンスメソッドを定義するマクロ
 

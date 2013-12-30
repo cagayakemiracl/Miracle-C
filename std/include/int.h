@@ -24,15 +24,17 @@ typedef struct _Int {
   Int (Method size)(Int self);                // 配列の大きさを返す
 
   // 要素indexの一つのインスタンスに対するメソッド
-  Int (Method set_at)(Int self, const int index, const int field); // self->fieldをfieldに変更
+  Int (Method set_at)(Int self, const int field, const int index); // self->fieldをfieldに変更
   String (Method to_s_at)(Int self, const int index);              // Stringクラスのインスタンスに変換
   Int (Method get_at)(Int self, const int index);                  // 入力
   Int (Method put_at)(Int self, const int index);                  // 出力
 
-  // 貴女と合体したい
-  Int (Method concat)(Int self, Int node);      // うお〜〜！！燃える〜！！！(selfの末尾にnodeをくっつける)
-  Int (Method push)(Int self, const int field); // ゼーロテュピアーグラディウス!(selfの末尾にインスタンスを初期値fieldでくっつける)
-  Int (Method add)(Int self);                   // 何これ・・・きもちいい/////(selfの末尾に新しいインスタンスをくっつける)
+  Int (Method concat)(Int self, Int node);          // selfの末尾にnodeをくっつける
+  Int (Method push)(Int self, const int field);     // selfの末尾にインスタンスを初期値fieldでくっつける
+  Int (Method add)(Int self);                       // selfの末尾に新しいインスタンスをくっつける
+  Int (Method genesis)(Int self, Int node);         // selfとnodeをくっつける
+  Int (Method unite)(Int self, Int node);           // selfの全要素にnodeを複製したものをくっつける
+  Int (Method aquarion)(Int self, const int index); // selfの全要素に要素indexの新しいインスタンスをくっつける
   
   // 配列の全要素に反映するメソッド
   void (Method dealloc)(Int self);              // インスタンスを削除
@@ -41,9 +43,9 @@ typedef struct _Int {
   Int (Method input)(Int self);                 // 入力
   Int (Method print)(Int self);                 // 出力
 
-  // マクロスの方が有能なのであまり使わない
-  Int (Method each)(Int self, void (Method func)(Int self));              // 行くぜ！可愛い子ちゃん！！ヒャホーーー！！
-  Int (Method eachWI)(Int self, void (Method func)(Int self, Int index)); // お前達が、俺の翼だ！
+  // マクロの方が有能なのであまり使わない
+  Int (Method each)(Int self, void (Method func)(Int self));             
+  Int (Method eachWI)(Int self, void (Method func)(Int self, Int index));
 } Int_t;
 
 #endif

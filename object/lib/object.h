@@ -35,7 +35,80 @@
 #define index_two_m(type, self, index, func, field) \
   type t = At(self, index);                         \
   return func(t, field);                            \
-    
+
+#define array_method(type, name)                \
+  static type A##name(type self);               \
+  static type T##name(type self)                \
+  {                                             \
+    if (self->self == self) {                   \
+      return L##name(self);                     \
+    }                                           \
+    A##name(self->self);                        \
+      if (self->next) {                         \
+        return T##name(self->next);             \
+      }                                         \
+      return self;                              \
+  }                                             \
+  static type A##name(type self)                \
+  {                                             \
+    if (self->self == self) {                   \
+      return L##name(self);                     \
+    }                                           \
+    T##name(self->self);                        \
+      if (self->next) {                         \
+        return A##name(self->next);             \
+      }                                         \
+      return self;                              \
+  }
+
+#define array_method_two(type, name, arg_t, arg)                \
+  static type A##name(type self, arg_t);                        \
+  static type T##name(type self, arg_t)                         \
+  {                                                             \
+    if (self->self == self) {                                   \
+      return L##name(self, arg);                                \
+    }                                                           \
+    A##name(self->self, arg);                                   \
+      if (self->next) {                                         \
+        return T##name(self->next, arg);                        \
+      }                                                         \
+      return self;                                              \
+  }                                                             \
+  static type A##name(type self, arg_t)                         \
+  {                                                             \
+    if (self->self == self) {                                   \
+      return L##name(self, arg);                                \
+    }                                                           \
+    T##name(self->self, arg);                                   \
+      if (self->next) {                                         \
+        return A##name(self->next, arg);                        \
+      }                                                         \
+      return self;                                              \
+  }
+
+#define array_method_void(type, name)           \
+  static void A##name(type self);               \
+  static void T##name(type self)                \
+  {                                             \
+    if (self->self == self) {                   \
+      return L##name(self);                     \
+    }                                           \
+    A##name(self->self);                        \
+      if (self->next) {                         \
+        return T##name(self->next);             \
+      }                                         \
+  }                                             \
+  static void A##name(type self)                \
+  {                                             \
+    if (self->self == self) {                   \
+      return L##name(self);                     \
+    }                                           \
+    T##name(self->self);                        \
+      if (self->next) {                         \
+        return A##name(self->next);             \
+      }                                         \
+  }
+
 // インスタンスメソッドを簡単に使うためのシンタックスシュガー
 #define Set(s, d) (s->set(s, d))
 #define To_i(s)   (s->to_i(s))

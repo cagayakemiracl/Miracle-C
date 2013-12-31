@@ -190,8 +190,8 @@ static Int Lfill(Int self, const int field)
   return self;
 }
 
-#define each_dup(p) copy = Lconcat(copy, Mdup(p))
-
+#define each_dup(p) copy = Lconcat(copy, Mdup(p)); \
+  
 static Int Ldup(Int self)
 {
   Int copy = NULL; // selfと同じ内容のインスタンス
@@ -226,7 +226,10 @@ static Int Linput(Int self)
   return self;
 }
 
-#define each_print(p) Mput(p); putchar(' ');
+#define each_print(p) Mput(p); \
+  if (p->next) {               \
+  fputs(", ", stdout);         \
+  }                            \
 
 static Int Lprint(Int self)
 {
@@ -242,12 +245,9 @@ static Int Lprint(Int self)
     if (bool) {
       Mput(self);
     } else {
-      Init(String, left, "[ ");  // 配列の左括弧 left bracket
-      Init(String, right, "] "); // 配列の右括弧 right bracket
-
-      Put(left)->dealloc(left);
+      putchar('[');
       each_m(Int, self, each_print);
-      Put(right)->dealloc(right);
+      putchar(']');
     }
   }
 
@@ -268,7 +268,7 @@ static Int LeachWI(Int self, void (Method func)(Int self, Int index))
   return self;
 }
 
-static Int Agenesis(Int self, Int node)
+static Int Lgenesis(Int self, Int node)
 {
   self->self = node;
 
@@ -277,7 +277,7 @@ static Int Agenesis(Int self, Int node)
 
 #define each_unite(p) p->self = Ldup(node);
 
-static Int Aunite(Int self, Int node)
+static Int Lunite(Int self, Int node)
 {
   each_m(Int, self, each_unite);
 
@@ -286,59 +286,91 @@ static Int Aunite(Int self, Int node)
 
 #define each_aquarion(p) p->self = Int_newA(index);
 
-static Int Aaquarion(Int self, const int index)
+static Int Laquarion(Int self, const int index)
 {
   each_m(Int, self, each_aquarion);
 
   return self;
 }
 
-static Int Afill(Int self, const int field);
-static Int Tfill(Int self, const int field)
+array_method_void(Int, dealloc);
+array_method(Int, input);
+array_method_two(Int, fill, const int field, field);
+array_method_two(Int, aquarion, const int index, index);
+array_method_two(Int, each, void (Method func)(Int self), func);
+
+static Int Agenesis(Int self, Int node)
+{
+  if (self->self) {
+    return Lgenesis(self, node);
+  }
+
+  return Agenesis(self->self, node);
+}
+
+static Int Adup(Int copy, Int self);
+static Int Tdup(Int copy, Int self)
 {
   if (self->self == self) {
-    return Lfill(self, field);
+    return copy;
   }
-  
+    
+  copy->self = Ldup(self->self);
+  Adup(copy->self, self->self);
   if (self->next) {
-    Afill(self->next, field);
+    return Tdup(copy->next, self->next);
   }
-  
-  return Tfill(self->self, field);
+
+  return copy;
 }
 
-static Int Afill(Int self, const int field)
+static Int Adup(Int copy, Int self)
 {
   if (self->self == self) {
-    return Lfill(self, field);
+    return copy;
   }
   
-  Tfill(self->self, field);
+  copy->self = Ldup(self->self);
+  Tdup(copy->self, self->self);
   if (self->next) {
-    return Afill(self->next, field);
+    return Adup(copy->next, self->next);
   }
 
-  return self;
+  return copy;
 }
 
-static Int Ainput(Int self);
-static Int Tinput(Int self)
+static Int Sdup(Int self)
 {
-}
+  Int copy = Ldup(self);
+  if (self->self == self) {
+    return copy;
+  }
+  
+  Adup(copy, self);
 
+  return copy;
+}
+  
 static Int Aprint(Int self);
 static Int Tprint(Int self)
 {
   if (self->self == self) {
-    return Lprint(self);
+    Lprint(self);
+  } else {
+    if (!self->prev) {
+      putchar('[');
+    }
+    
+    Aprint(self->self);
+    if (self->next) {
+      fputs(", ", stdout);
+      return Tprint(self->next);
+    } else {
+      putchar(']');
+    }
   }
-  
-  if (self->next) {
-    Aprint(self->next);
-  }
-  
-  return Tprint(self->self);
-  
+
+  return self;
 }
 
 static Int Aprint(Int self)
@@ -346,12 +378,25 @@ static Int Aprint(Int self)
   if (self->self == self) {
     Lprint(self);
   } else {
+    if (!self->prev) {
+      putchar('[');
+    }
+    
     Tprint(self->self);
     if (self->next) {
+      fputs(", ", stdout);
       return Aprint(self->next);
+    } else {
+      putchar(']');
     }
   }
 
+  return self;
+}
+
+static Int Sprint(Int self)
+{
+  Aprint(self);
   putchar('\n');
   
   return self;
@@ -383,20 +428,20 @@ Int Int_new(void)
       .get_at  = Lget_at,
       .put_at  = Lput_at,
 
-      .concat = Lconcat,
-      .push   = Lpush,
-      .add    = Ladd,
-      .genesis = Agenesis,
-      .unite  = Aunite,
-      .aquarion =Aaquarion,
+      .concat   = Lconcat,
+      .push     = Lpush,
+      .add      = Ladd,
+      .genesis  = Agenesis,
+      .unite    = Lunite,
+      .aquarion = Aaquarion,
       
-      .dealloc = Ldealloc,
+      .dealloc = Adealloc,
       .fill    = Afill,
-      .dup     = Ldup,
-      .input   = Linput,
-      .print   = Aprint,
+      .dup     = Sdup,
+      .input   = Ainput,
+      .print   = Sprint,
       
-      .each  = Leach,
+      .each   = Aeach,
       .eachWI = LeachWI,
     };
 

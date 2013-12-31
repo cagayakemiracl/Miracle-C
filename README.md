@@ -3,7 +3,7 @@ A. C言語でオブジェクト指向プログラミングするためのライ�
 
 使い方
 
-#include "miracle.h"
+ #include "miracle.h"
 とするとMiracle-Cのライブラリを全て読み込みます
 
 -lmiracle -L.
@@ -57,5 +57,5 @@ gcc4.7.3
 注意
 gccでコンパイルする場合は object/lib/object.hファイルを以下のように編集してください
 
-#define Method * // gcc用
+ #define Method * // gcc用
 //#define Method *const // インスタンスメソッドを定義するマクロ clang用

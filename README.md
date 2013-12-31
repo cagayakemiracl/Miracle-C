@@ -1,5 +1,5 @@
-##Q. これは何？  
-##A. C言語でオブジェクト指向プログラミングするためのライブラリです
+**Q. これは何？**  
+**A. C言語でオブジェクト指向プログラミングするためのライブラリです**
 
 #使い方
 
@@ -22,27 +22,27 @@ Init(Int, i, 10);
 ####IntクラスのインスタンスをString(文字列)クラスのインスタンスに変換出来ます
 String s = To_s(i); Dealloc(i);
 ####Stringクラスのインスタンスを入力して表示する場合は
-New(String, s);  
+New(String, s);
 Get(s)->put(s)->dealloc(s);
 ####使い終わったインスタンスはDeallocマクロもしくはdeallocインスタンスメソッドで削除してください
-Dealloc(i);  
+Dealloc(i);
 i->dealloc(i);
 ####配列を作る事もできます
-ArrayNew(Int, i, 5);  
+ArrayNew(Int, i, 5);
 ####多次元配列も作れます
-ArrayNew(Int, i, 5);  
+ArrayNew(Int, i, 5);
 Aquarion(i, 3);      ;=> i[5][3];
 ####簡単なサンプルコードも用意してます
-sample/sample.c  
+sample/sample.c
 makeコマンドでコンパイル出来るはずです
 
 ##動作確認
 * Mac OS X 10.9
-- clang (llvm3.3 デフォ)
-- apple-gcc-4.2
+    - clang (llvm3.3 デフォ)
+    - apple-gcc-4.2
 * Ubuntu 13.04 32bit
-- clang (llvm3.3)
-- gcc4.7.3
+   - clang (llvm3.3)
+   - gcc4.7.3
 
 #**注意**
 gccでコンパイルする場合は object/lib/object.hファイルを以下のように編集してください

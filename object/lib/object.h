@@ -8,7 +8,8 @@
   C C##_init(const c field);                    \
   C C##_newA(const int index);                  \
 
-#define Method *const // インスタンスメソッドを定義するマクロ
+//#define Method * // gcc用
+#define Method *const // インスタンスメソッドを定義するマクロ clang用
 
 #define each_m(type, self, func)                \
   {                                             \
@@ -126,8 +127,12 @@
 #define Get_at(s, i)   (s->Get_at(s, i))
 #define Put_at(s, i)  (s->put_at(s, i))
 
-#define Concat(s, d) (s->concat(s, d))
-#define Push(s, d)   (s->push(s, d))
+#define Concat(s, d)   (s->concat(s, d))
+#define Push(s, d)     (s->push(s, d))
+#define Add(s)         (s->add(s))
+#define Genesis(s, d)  (s->genesis(s, d))
+#define Unite(s, d)    (s->unite(s, d))
+#define Aquarion(s, i) (s->aquarion(s, i))
 
 #define Dealloc(s) (s->dealloc(s))
 #define Fill(s, d) (s->fill(s, d))

@@ -35,6 +35,27 @@ i->dealloc(i);
 配列を作る事もできます
 ArrayNew(Int, i, 5);
 
+多次元配列も作れます
+ArrayNew(Int, i, 5);
+Aquarion(i, 3);      ;=> i[5][3];
+
 簡単なサンプルコードも用意してます
 sample/sample.c
 makeコマンドでコンパイル出来るはずです
+
+
+動作確認
+Mac OS X 10.9
+clang (llvm3.3 デフォ)
+apple-gcc-4.2
+
+Ubuntu 13.04 32bit
+clang (llvm3.3)
+gcc4.7.3
+
+
+注意
+gccでコンパイルする場合は object/lib/object.hファイルを以下のように編集してください
+
+#define Method * // gcc用
+//#define Method *const // インスタンスメソッドを定義するマクロ clang用

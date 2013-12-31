@@ -14,7 +14,7 @@ int main(void)
   {
     New(Int, i); // Intクラスのインスタンス生成(要素数1)
 
-    Set(i, 1)->add(i)->set_at(i, 1, 2)->print(i)->dealloc(i);
+    Set(i, 1)->add(i)->set_at(i, 2, 1)->print(i)->dealloc(i);
   }
 
   {
@@ -32,15 +32,16 @@ int main(void)
   {
     ArrayNew(Int, i, 2);
 
-    i->aquarion(i, 3)->aquarion(i, 5)->fill(i, 7)->print(i);
-    Int p = Dup(i); Dealloc(i);
+    Aquarion(i, 3)->aquarion(i, 5)->fill(i, 7)->print(i);
+    Int p = Dup(i); Dealloc(i); // iのコピー
+    
     Fill(p, 2)->print(p)->dealloc(p);
   }
     
   {
     ArrayNew(Int, i, 3); // 要素が３のIntクラス生成
 
-    i->aquarion(i, 2)->input(i)->each(i, each_put)->dealloc(i); putchar('\n');
+    Aquarion(i, 2)->input(i)->each(i, each_put)->dealloc(i); putchar('\n');
   }
 
   return 0;

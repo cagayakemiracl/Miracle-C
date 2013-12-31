@@ -1,16 +1,16 @@
-Q. これは何？
-  A. C言語でオブジェクト指向プログラミングするためのライブラリです
+  Q. これは何？
+A. C言語でオブジェクト指向プログラミングするためのライブラリです
 
 使い方
 
- #include "miracle.h" 
+  #include "miracle.h" 
 とするとMiracle-Cのライブラリを全て読み込みます
 
--lmiracle -L.
+  -lmiracle -L.
 とするとリンク出来ます
 
-例えばInt(整数)クラスのインスタンスを10で初期化する場合は
-Int i = Int_new();
+  例えばInt(整数)クラスのインスタンスを10で初期化する場合は
+  Int i = Int_new();
 Set(i, 10);
 
 New(Int, i);

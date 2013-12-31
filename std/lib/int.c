@@ -270,12 +270,12 @@ static Int LeachWI(Int self, void (Method func)(Int self, Int index))
 
 static Int Lgenesis(Int self, Int node)
 {
-  self->self = node;
+  self->child = node;
 
   return self;
 }
 
-#define each_unite(p) p->self = Ldup(node);
+#define each_unite(p) p->child = Ldup(node);
 
 static Int Lunite(Int self, Int node)
 {
@@ -284,7 +284,7 @@ static Int Lunite(Int self, Int node)
   return self;
 }
 
-#define each_aquarion(p) p->self = Int_newA(index);
+#define each_aquarion(p) p->child = Int_newA(index);
 
 static Int Laquarion(Int self, const int index)
 {
@@ -301,22 +301,22 @@ array_method_two(Int, each, void (Method func)(Int self), func);
 
 static Int Agenesis(Int self, Int node)
 {
-  if (self->self) {
+  if (self->child) {
     return Lgenesis(self, node);
   }
 
-  return Agenesis(self->self, node);
+  return Agenesis(self->child, node);
 }
 
 static Int Adup(Int copy, Int self);
 static Int Tdup(Int copy, Int self)
 {
-  if (self->self == self) {
+  if (self->child == self) {
     return copy;
   }
     
-  copy->self = Ldup(self->self);
-  Adup(copy->self, self->self);
+  copy->child = Ldup(self->child);
+  Adup(copy->child, self->child);
   if (self->next) {
     return Tdup(copy->next, self->next);
   }
@@ -326,12 +326,12 @@ static Int Tdup(Int copy, Int self)
 
 static Int Adup(Int copy, Int self)
 {
-  if (self->self == self) {
+  if (self->child == self) {
     return copy;
   }
   
-  copy->self = Ldup(self->self);
-  Tdup(copy->self, self->self);
+  copy->child = Ldup(self->child);
+  Tdup(copy->child, self->child);
   if (self->next) {
     return Adup(copy->next, self->next);
   }
@@ -342,7 +342,7 @@ static Int Adup(Int copy, Int self)
 static Int Sdup(Int self)
 {
   Int copy = Ldup(self);
-  if (self->self == self) {
+  if (self->child == self) {
     return copy;
   }
   
@@ -354,14 +354,14 @@ static Int Sdup(Int self)
 static Int Aprint(Int self);
 static Int Tprint(Int self)
 {
-  if (self->self == self) {
+  if (self->child == self) {
     Lprint(self);
   } else {
     if (!self->prev) {
       putchar('[');
     }
     
-    Aprint(self->self);
+    Aprint(self->child);
     if (self->next) {
       fputs(", ", stdout);
       return Tprint(self->next);
@@ -375,14 +375,14 @@ static Int Tprint(Int self)
 
 static Int Aprint(Int self)
 {
-  if (self->self == self) {
+  if (self->child == self) {
     Lprint(self);
   } else {
     if (!self->prev) {
       putchar('[');
     }
     
-    Tprint(self->self);
+    Tprint(self->child);
     if (self->next) {
       fputs(", ", stdout);
       return Aprint(self->next);
@@ -411,7 +411,7 @@ Int Int_new(void)
     const Int_t tmp = { // 読み取り専用であるインスタンスメソッドのポインタをnewに代入するための一時変数 temp
       .prev = NULL,
       .next = NULL,
-      .self = new,
+      .child = new,
       
       .set  = Mset,
       .to_s = Mto_s,

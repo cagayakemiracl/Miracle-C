@@ -7,7 +7,7 @@ String int_to_s(const int num); // int型変数をStringクラスのインスタ
 typedef struct _Int {
   Int prev; // 双方向リスト
   Int next;
-  Int self; // Intクラスの実体を指す 多次元配列を実現するために使う
+  Int child; // Intクラスの実体を指す 多次元配列を実現するために使う
   
   int field; // int型のインスタンス変数
 

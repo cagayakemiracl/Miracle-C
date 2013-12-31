@@ -41,10 +41,10 @@
   static type A##name(type self);               \
   static type T##name(type self)                \
   {                                             \
-    if (self->self == self) {                   \
+    if (self->child== self) {                   \
       return L##name(self);                     \
     }                                           \
-    A##name(self->self);                        \
+    A##name(self->child);                        \
       if (self->next) {                         \
         return T##name(self->next);             \
       }                                         \
@@ -52,10 +52,10 @@
   }                                             \
   static type A##name(type self)                \
   {                                             \
-    if (self->self == self) {                   \
+    if (self->child == self) {                   \
       return L##name(self);                     \
     }                                           \
-    T##name(self->self);                        \
+    T##name(self->child);                        \
       if (self->next) {                         \
         return A##name(self->next);             \
       }                                         \
@@ -66,10 +66,10 @@
   static type A##name(type self, arg_t);                        \
   static type T##name(type self, arg_t)                         \
   {                                                             \
-    if (self->self == self) {                                   \
+    if (self->child == self) {                                   \
       return L##name(self, arg);                                \
     }                                                           \
-    A##name(self->self, arg);                                   \
+    A##name(self->child, arg);                                   \
       if (self->next) {                                         \
         return T##name(self->next, arg);                        \
       }                                                         \
@@ -77,10 +77,10 @@
   }                                                             \
   static type A##name(type self, arg_t)                         \
   {                                                             \
-    if (self->self == self) {                                   \
+    if (self->child == self) {                                   \
       return L##name(self, arg);                                \
     }                                                           \
-    T##name(self->self, arg);                                   \
+    T##name(self->child, arg);                                   \
       if (self->next) {                                         \
         return A##name(self->next, arg);                        \
       }                                                         \
@@ -91,20 +91,20 @@
   static void A##name(type self);               \
   static void T##name(type self)                \
   {                                             \
-    if (self->self == self) {                   \
+    if (self->child == self) {                   \
       return L##name(self);                     \
     }                                           \
-    A##name(self->self);                        \
+    A##name(self->child);                        \
       if (self->next) {                         \
         return T##name(self->next);             \
       }                                         \
   }                                             \
   static void A##name(type self)                \
   {                                             \
-    if (self->self == self) {                   \
+    if (self->child == self) {                   \
       return L##name(self);                     \
     }                                           \
-    T##name(self->self);                        \
+    T##name(self->child);                        \
       if (self->next) {                         \
         return A##name(self->next);             \
       }                                         \

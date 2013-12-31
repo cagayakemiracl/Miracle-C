@@ -8,10 +8,10 @@
 -lmiracle -L.
 ##オブジェクトの生成
 **例えばInt(整数)クラスのインスタンスを10で初期化する場合は**  
-1. Int i = Int_new(); Set(i, 10);    
-2. New(Int, i); Set(i, 10);    
-3. Int i = Int_init(10);    
-4. Init(Int, i, 10);    
+* Int i = Int_new(); Set(i, 10);    
+* New(Int, i); Set(i, 10);    
+* Int i = Int_init(10);    
+* Init(Int, i, 10);    
 この４つは同じです  
 **IntクラスのインスタンスをString(文字列)クラスのインスタンスに変換出来ます**  
 String s = To_s(i); Dealloc(i);  
@@ -36,8 +36,7 @@ makeコマンドでコンパイル出来るはずです
     - apple-gcc-4.2  
 * Ubuntu 13.04 32bit
    - clang (llvm3.3)
-   - gcc4.7.3
-
+   - gcc4.7.3  
 #注意
 gccでコンパイルする場合は object/lib/object.hファイルを以下のように編集してください  
 \#define Method * // gcc用  
